@@ -57,19 +57,20 @@ export class APIService {
         const returnValue = []
         let fileNames = await readdir(newPath)
         let pathName = newPath
+        let relativeFilePath = newPath.replace(process.env.BASE_PATH, '')
 
         for (let file of fileNames.filter(junk.not)) {
             try {
                 let stats = await stat(pathName + '/' + file)
                 if (stats.isFile()) {
                     returnValue.push({
-                        path: pathName,
+                        path: relativeFilePath + '/' + file,
                         name: file,
                         type: file.substring(file.lastIndexOf('.') + 1),
                     })
                 } else if (stats.isDirectory()) {
                     returnValue.push({
-                        path: pathName,
+                        path: relativeFilePath + '/' + file,
                         name: file,
                         type: 'Directory',
                     })
