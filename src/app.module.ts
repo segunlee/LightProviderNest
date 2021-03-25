@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APIModule } from './api/api.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
-const ENV = process.env.NODE_ENV;
-
-console.log(ENV)
+const ENV = process.env.NODE_ENV
+console.log("Start Env: " + ENV)
 
 @Module({
     imports: [
@@ -12,6 +13,8 @@ console.log(ENV)
             isGlobal: true, 
             envFilePath: !ENV ? '.env.dev' : `.env.${ENV}`
         }),
+        AuthModule,
+        UsersModule,
         APIModule
     ]
 })

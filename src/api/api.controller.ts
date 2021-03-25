@@ -1,11 +1,25 @@
-import { BadRequestException, Controller, Get, Query, Response } from '@nestjs/common'
+import { BadRequestException, Controller, Get, Query, Response, Request, UseGuards, Post } from '@nestjs/common'
+import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { APIService } from './api.service'
 import { ArchiveContentMode, ArchiveType } from './model/api.model'
 
 @Controller('api')
 export class APIController {
-    constructor(private service: APIService) { }
+    constructor(
+        private service: APIService,
+        private authService: AuthService
+    ) { }
 
+
+    @UseGuards(LocalAuthGuard)
+    @Post('access')
+    async login(@Request() req: any) {
+        return this.authService.login(req.user);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('list')
     async filetree(
         @Query('path') path: string = '') {
@@ -33,6 +47,7 @@ export class APIController {
         })
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('archive/list')
     async getArchiveFileContents(
         @Query('type') type: string = '',
@@ -63,6 +78,7 @@ export class APIController {
         })
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('archive/image')
     async getImageFromArchiveContents(
         @Response() res: any,
@@ -88,6 +104,7 @@ export class APIController {
         this.service.responseToPipeOrSend(enumType, path, filename, res)
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('uniqueidentifier')
     async generateUniqueIdentifier(
         @Query('path') path: string = '') {
@@ -116,6 +133,7 @@ export class APIController {
         })
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('archive/download')
     async downloadArchive(
         @Response() res: any,
