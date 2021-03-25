@@ -2,11 +2,30 @@ import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common'
 import { ZipEntry } from 'node-stream-zip'
 import { ArchiveContent, ArchiveContentMode, ArchiveType } from './model/api.model'
 
+
+const { promisify } = require('util')
+const fs = require('fs')
+const stat = promisify(require('fs').stat)
+const readdir = promisify(require('fs').readdir)
+const junk = require('junk')
+const sizeOf = require('buffer-image-size')
+const unzip = require('node-stream-zip')
+const unrar = require("node-unrar-js")
+
+
 @Injectable()
 export class APIService {
 
-    private isFileExist(path: string): boolean {
-        const fs = require('fs')
+    absolutePath(path: string): string {
+        let basePath = process.env.BASE_PATH
+        if (basePath.substr(basePath.length - 1, 1) != "/") {
+            basePath = basePath + "/"
+        }
+        console.log(basePath + path)
+        return basePath + path
+    }
+
+    isFileExist(path: string): boolean {
         try {
             if (!fs.existsSync(path)) {
                 return false
@@ -22,9 +41,6 @@ export class APIService {
         if (!this.isFileExist(path)) {
             return false
         }
-
-        const { promisify } = require('util')
-        const stat = promisify(require('fs').stat)
         const stats = await stat(path)
         return stats.isDirectory()
     }
@@ -33,19 +49,11 @@ export class APIService {
         if (!this.isFileExist(path)) {
             return false
         }
-
-        const { promisify } = require('util')
-        const stat = promisify(require('fs').stat)
         const stats = await stat(path)
         return stats.isFile()
     }
 
     async getFileList(newPath: string): Promise<any[]> {
-        const { promisify } = require('util')
-        const readdir = promisify(require('fs').readdir)
-        const stat = promisify(require('fs').stat)
-        const junk = require('junk')
-
         const returnValue = []
         let fileNames = await readdir(newPath)
         let pathName = newPath
@@ -90,12 +98,10 @@ export class APIService {
     }
 
     private async getZipFileList(path: string, mode: ArchiveContentMode): Promise<ArchiveContent[]> {
-        var sizeOf = require('buffer-image-size')
-        const StreamZip = require('node-stream-zip')
         const returnValue = []
 
         try {
-            const zip = new StreamZip.async({ file: path })
+            const zip = new unzip.async({ file: path })
             const entries = await zip.entries() as ZipEntry[]
             for (const entry of Object.values(entries)) {
 
@@ -133,9 +139,6 @@ export class APIService {
     }
 
     private async getRarFileList(path: string, mode: ArchiveContentMode): Promise<ArchiveContent[]> {
-        var sizeOf = require('buffer-image-size')
-        var fs = require("fs")
-        var unrar = require("node-unrar-js")
         const returnValue = []
 
         try {
@@ -202,8 +205,7 @@ export class APIService {
     }
 
     private async responseToZipImage(path: string, filename: string, res: any) {
-        const StreamZip = require('node-stream-zip')
-        const zip = new StreamZip.async({ file: path })
+        const zip = new unzip.async({ file: path })
         const fileExt = filename.substring(filename.lastIndexOf('.') + 1)
         try {
             res.set('Content-Type', 'image/' + fileExt)
@@ -217,8 +219,6 @@ export class APIService {
     }
 
     private async responseToRarImage(path: string, filename: string, res: any) {
-        var fs = require("fs")
-        var unrar = require("node-unrar-js")
         try {
             const data = Uint8Array.from(fs.readFileSync(path)).buffer
             const extractor = await unrar.createExtractorFromData({ data: data })
@@ -237,15 +237,12 @@ export class APIService {
     }
 
     async generateUniqueIdentifier(path: string): Promise<string> {
-        const { promisify } = require('util')
-        const stat = promisify(require('fs').stat)
         let stats = await stat(path)
         const sum = stats.birthtimeMs + stats.size
         return sum.toString()
     }
 
     async downloadArchive(path: string, res: any) {
-        var fs = require("fs")
         const data = Uint8Array.from(fs.readFileSync(path)).buffer
         var buffer = Buffer.from(data)
         const fileExt = path.substring(path.lastIndexOf('.') + 1)

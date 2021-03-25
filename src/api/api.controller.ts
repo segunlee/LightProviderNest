@@ -10,13 +10,17 @@ export class APIController {
     async filetree(
         @Query('path') path: string = '') {
 
-        console.log(process.env.DATABASE_USER)
+        path = this.service.absolutePath(path)
 
         if (path == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
         }
 
-        if (!this.service.isDirectory(path)) {
+        if (!this.service.isFileExist(path)) {
+            throw new BadRequestException(`대상이 존재하지 않습니다`)
+        }
+
+        if (!await this.service.isDirectory(path)) {
             throw new BadRequestException(`디렉토리가 아닙니다.`)
         }
 
@@ -35,8 +39,14 @@ export class APIController {
         @Query('path') path: string = '',
         @Query('mode') mode: ArchiveContentMode = ArchiveContentMode.none) {
 
+        path = this.service.absolutePath(path)
+
         if (type == '' || path == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
+        }
+
+        if (!this.service.isFileExist(path)) {
+            throw new BadRequestException(`대상이 존재하지 않습니다`)
         }
 
         if (!await this.service.isFile(path)) {
@@ -60,8 +70,14 @@ export class APIController {
         @Query('path') path: string = '',
         @Query('filename') filename: string = '') {
 
+        path = this.service.absolutePath(path)
+
         if (type == '' || path == '' || filename == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
+        }
+
+        if (!this.service.isFileExist(path)) {
+            throw new BadRequestException(`대상이 존재하지 않습니다`)
         }
 
         if (!await this.service.isFile(path)) {
@@ -76,8 +92,14 @@ export class APIController {
     async generateUniqueIdentifier(
         @Query('path') path: string = '') {
 
+        path = this.service.absolutePath(path)
+
         if (path == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
+        }
+
+        if (!this.service.isFileExist(path)) {
+            throw new BadRequestException(`대상이 존재하지 않습니다`)
         }
 
         if (!await this.service.isFile(path)) {
@@ -99,8 +121,14 @@ export class APIController {
         @Response() res: any,
         @Query('path') path: string = '') {
 
+        path = this.service.absolutePath(path)
+
         if (path == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
+        }
+
+        if (!this.service.isFileExist(path)) {
+            throw new BadRequestException(`대상이 존재하지 않습니다`)
         }
 
         if (!await this.service.isFile(path)) {
