@@ -11,7 +11,7 @@ const junk = require('junk')
 const sizeOf = require('buffer-image-size')
 const unzip = require('node-stream-zip')
 const unrar = require("node-unrar-js")
-
+const pathModule = require("path");
 
 @Injectable()
 export class APIService {
@@ -21,8 +21,9 @@ export class APIService {
         if (basePath.substr(basePath.length - 1, 1) != "/") {
             basePath = basePath + "/"
         }
-        console.log(basePath + path)
-        return basePath + path
+        const normalize = pathModule.normalize(basePath + path)
+        console.log(normalize)
+        return normalize
     }
 
     isFileExist(path: string): boolean {

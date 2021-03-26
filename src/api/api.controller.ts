@@ -50,13 +50,12 @@ export class APIController {
     @UseGuards(JwtAuthGuard)
     @Get('archive/list')
     async getArchiveFileContents(
-        @Query('type') type: string = '',
         @Query('path') path: string = '',
         @Query('mode') mode: ArchiveContentMode = ArchiveContentMode.none) {
 
         path = this.service.absolutePath(path)
 
-        if (type == '' || path == '') {
+        if (path == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
         }
 
@@ -68,6 +67,7 @@ export class APIController {
             throw new BadRequestException(`파일이 아닙니다.`)
         }
 
+        const type = path.substring(path.lastIndexOf('.') + 1)
         const enumType = type.toLowerCase() as ArchiveType
         const list = await this.service.getArchiveFileList(enumType, path, mode)
 
@@ -82,13 +82,12 @@ export class APIController {
     @Get('archive/image')
     async getImageFromArchiveContents(
         @Response() res: any,
-        @Query('type') type: string = '',
         @Query('path') path: string = '',
         @Query('filename') filename: string = '') {
 
         path = this.service.absolutePath(path)
 
-        if (type == '' || path == '' || filename == '') {
+        if (path == '' || filename == '') {
             throw new BadRequestException(`필수값이 누락되었습니다.`)
         }
 
@@ -100,6 +99,7 @@ export class APIController {
             throw new BadRequestException(`파일이 아닙니다`)
         }
 
+        const type = path.substring(path.lastIndexOf('.') + 1)
         const enumType = type.toLowerCase() as ArchiveType
         this.service.responseToPipeOrSend(enumType, path, filename, res)
     }
