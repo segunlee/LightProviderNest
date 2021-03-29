@@ -3,12 +3,12 @@
 <hr />
 
 <div>
-    <input placeholder="PORT" value="3000" #PORT />
-    <input placeholder="PASSWORD" #PASSWORD />
-    <input placeholder="ROOT" type="file" #ROOT />
+    <input placeholder="PORT" value="{{ config.PORT }}" #PORT />
+    <input placeholder="PASSWORD" value="{{ config.PASSWORD }}" #PASSWORD />
+    <input placeholder="ROOT" value="{{ config.ROOT }}" #ROOT />
     <button (click)="saveSettings(PORT.value, PASSWORD.value, ROOT.value)">저장</button>
 </div>
-
-<h3 *ngFor="let product of products">
+{{ config.PORT }}
+<!-- <h3 *ngFor="let product of products">
     {{ product.name }} <small>{{ product.count }}</small>
-</h3>
+</h3> -->

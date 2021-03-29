@@ -16,6 +16,8 @@ function createWindow() {
         height: 800,
         webPreferences: {
             nodeIntegration: true,
+            worldSafeExecuteJavaScript: true,
+            contextIsolation: true
         },
     })
     mainWindow.loadFile(`dist/LightProvider/index.html`)
@@ -33,8 +35,12 @@ function createWindow() {
     })
 }
 
+async function hello() {
+    logger.log("hello")
+}
+
 async function startServer() {
-    // logger.log("Starting server")
+    logger.log("Starting server")
     const { spawn } = require("child_process")
         // For electron-packager change cwd in spawn to app.getAppPath() and
         // uncomment the app require below
