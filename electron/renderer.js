@@ -2,22 +2,36 @@
 
 const fs = require('fs')
 const path = require('path')
-const rawdata = fs.readFileSync(path.join(__dirname, 'default_configs.json'), 'utf8')
-let config = JSON.parse(rawdata)
-let isServerRunToggle = true
+
+let isServerRunToggleValue = true
+var isLogviewToggleValue = true
+var timerId = 0
+var logFileSize = 0
+let exists_config = fs.existsSync(path.join(__dirname, 'default_configs.json'))
+let config
+if (exists_config) {
+    const rawdata = fs.readFileSync(path.join(__dirname, 'default_configs.json'), 'utf8')
+    config = JSON.parse(rawdata)
+} else {
+    config = { 'PORT': 3000, 'PASSWORD': '1234', 'BASE_PATH': '/' }
+    let data = JSON.stringify(config)
+    fs.writeFileSync(path.join(__dirname, 'default_configs.json'), data)
+}
 
 window.addEventListener('DOMContentLoaded', () => {
-
     console.log('DOMContentLoaded')
 
     // Display
     displayConfig()
     updateServerStatusButton()
+    toggleLogView()
 
     // Save Button Listener
     try {
         document.getElementById('saveButton').addEventListener('click', saveConfig)
         document.getElementById('serverStatusToggleButton').addEventListener('click', serverStatusToggle)
+        document.getElementById('logButton').addEventListener('click', toggleLogView)
+        document.getElementById('logCloseButton').addEventListener('click', toggleLogView)
     } catch (error) {
         console.error(error)
     }
@@ -37,7 +51,7 @@ function displayConfig() {
 
 function updateServerStatusButton() {
     try {
-        document.getElementById('serverStatusToggleButton').innerText = isServerRunToggle ? '서버 시작' : '서버 중지'
+        document.getElementById('serverStatusToggleButton').innerText = isServerRunToggleValue ? '서버 시작' : '서버 중지'
     } catch (error) {
         console.log(error)
     }
@@ -92,12 +106,12 @@ function isDirectory(inputPath) {
 }
 
 function serverStatusToggle() {
-    if (isServerRunToggle) {
+    if (isServerRunToggleValue) {
         startServer()
     } else {
         stopServer()
     }
-    isServerRunToggle = !isServerRunToggle
+    isServerRunToggleValue = !isServerRunToggleValue
     updateServerStatusButton()
 }
 
@@ -111,4 +125,50 @@ function stopServer() {
     const { ipcRenderer } = require('electron')
     const payload = 'API_SERVER_STOP'
     ipcRenderer.send('CHANNEL_NAME', payload)
+}
+
+
+
+function toggleLogView() {
+    isLogviewToggleValue = !isLogviewToggleValue
+    document.getElementById('main_view').style.display = isLogviewToggleValue ? 'none' : 'block'
+    document.getElementById('log_view').style.display = isLogviewToggleValue ? 'block' : 'none'
+    document.getElementById('logButton').style.display = isLogviewToggleValue ? 'none' : 'block'
+    document.getElementById('logCloseButton').style.display = isLogviewToggleValue ? 'block' : 'none'
+
+    if (!isLogviewToggleValue) {
+        clearInterval(timerId)
+        logFileSize = 0
+        return
+    }
+
+    timerId = setInterval(drawLog, 1000)
+}
+
+
+function drawLog() {
+    let exists = fs.existsSync(path.join(__dirname, "lightprovider.log"))
+    if (!exists) {
+        return
+    }
+
+    // logFileSize
+    let newSize = fs.statSync(path.join(__dirname, 'lightprovider.log')).size
+    if (newSize === logFileSize) {
+        return;
+    }
+
+    logFileSize = newSize
+
+    var log_list = document.getElementById('log_list')
+    log_list.innerHTML = ''
+
+    const lineReader = require('reverse-line-reader')
+    lineReader.eachLine(path.join(__dirname, 'lightprovider.log'), function(line, last) {
+        var li = document.createElement("li")
+        li.appendChild(document.createTextNode(line))
+        li.setAttribute('class', 'list-group-item')
+        li.setAttribute('style', 'font-size: 0.7rem; text-align: left;')
+        log_list.appendChild(li)
+    })
 }

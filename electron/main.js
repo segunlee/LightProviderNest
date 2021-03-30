@@ -106,6 +106,12 @@ ipcMain.on('CHANNEL_NAME', (evt, payload) => {
 app.on('ready', async function() {
     logger.log('Electron: ready')
     createWindow()
+
+    try {
+        fs.unlinkSync(path.join(__dirname, "./lightprovider.log"))
+    } catch (error) {
+
+    }
 })
 
 app.on('browser-window-created', function(e, window) {
