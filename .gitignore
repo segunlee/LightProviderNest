@@ -39,3 +39,4 @@ electron/default_configs.json
 electron/dist
 electron/node_modules
 electron/log.txt
+electron/release-builds

@@ -124,8 +124,7 @@ export class APIController {
         }
 
         const identifier = await this.service.generateUniqueIdentifier(path)
-        console.log("uniqueue_identifier: " + identifier)
-
+        
         return Object.assign({
             uniqueIdentifier: identifier,
             statusCode: 200,

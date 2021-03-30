@@ -10,19 +10,18 @@ const readdir = promisify(require('fs').readdir)
 const junk = require('junk')
 const sizeOf = require('buffer-image-size')
 const unzip = require('node-stream-zip')
-const unrar = require("node-unrar-js")
-const pathModule = require("path");
+const unrar = require('node-unrar-js')
+const pathModule = require('path')
 
 @Injectable()
 export class APIService {
 
     absolutePath(path: string): string {
         let basePath = process.env.BASE_PATH
-        if (basePath.substr(basePath.length - 1, 1) != "/") {
-            basePath = basePath + "/"
+        if (basePath.substr(basePath.length - 1, 1) != '/') {
+            basePath = basePath + '/'
         }
         const normalize = pathModule.normalize(basePath + path)
-        console.log(normalize)
         return normalize
     }
 
@@ -55,6 +54,8 @@ export class APIService {
     }
 
     async getFileList(newPath: string): Promise<any[]> {
+        console.log(`getFileList | ${newPath}`)
+
         const returnValue = []
         let fileNames = await readdir(newPath)
         let pathName = newPath
@@ -76,8 +77,8 @@ export class APIService {
                         type: 'Directory',
                     })
                 }
-            } catch (err) {
-                console.log(`${err}`)
+            } catch (error) {
+                console.log(`${error}`)
             }
         }
 
@@ -85,6 +86,8 @@ export class APIService {
     }
 
     async getArchiveFileList(type: ArchiveType, path: string, mode: ArchiveContentMode): Promise<ArchiveContent[]> {
+        console.log(`getArchiveFileList | ${type} | ${path} | ${mode}`)
+
         switch (type) {
             case ArchiveType.zip:
                 return this.getZipFileList(path, mode)
@@ -95,7 +98,7 @@ export class APIService {
             case ArchiveType.cbr:
                 return this.getRarFileList(path, mode)
             default:
-                throw new BadRequestException("not supported archive type")
+                throw new BadRequestException('not supported archive type')
         }
     }
 
@@ -111,7 +114,7 @@ export class APIService {
                     continue
                 }
 
-                if (entry.name.includes("__MACOSX/")) {
+                if (entry.name.includes('__MACOSX/')) {
                     continue
                 }
 
@@ -134,7 +137,7 @@ export class APIService {
 
             await zip.close()
         } catch (error) {
-            throw new BadRequestException(error + "\n(" + path + ")")
+            throw new BadRequestException(error + '\n(' + path + ')')
         }
 
         return returnValue
@@ -150,7 +153,7 @@ export class APIService {
 
             const fileNames = []
             for (const header of [...list.fileHeaders]) {
-                if (header.name.includes("__MACOSX/")) {
+                if (header.name.includes('__MACOSX/')) {
                     continue
                 }
                 fileNames.push(header.name)
@@ -185,13 +188,15 @@ export class APIService {
                 }
             }
         } catch (error) {
-            throw new BadRequestException(error + "\n(" + path + ")")
+            throw new BadRequestException(error + '\n(' + path + ')')
         }
 
         return returnValue
     }
 
     async responseToPipeOrSend(type: ArchiveType, path: string, filename: string, res: any) {
+        console.log(`responseToPipeOrSend | ${type} | ${path} | ${filename}`)
+
         switch (type) {
             case ArchiveType.zip:
                 return this.responseToZipImage(path, filename, res)
@@ -202,7 +207,7 @@ export class APIService {
             case ArchiveType.cbr:
                 return this.responseToRarImage(path, filename, res)
             default:
-                throw new BadRequestException("not supported archive type")
+                throw new BadRequestException('not supported archive type')
         }
     }
 
@@ -216,7 +221,7 @@ export class APIService {
             stm.on('end', () => zip.close())
         } catch (error) {
             res.status(HttpStatus.BAD_REQUEST)
-            res.send(new BadRequestException(error + "\n(" + path + ")"))
+            res.send(new BadRequestException(error + '\n(' + path + ')'))
         }
     }
 
@@ -234,7 +239,7 @@ export class APIService {
             res.send(buffer)
         } catch (error) {
             res.status(HttpStatus.BAD_REQUEST)
-            res.send(new BadRequestException(error + "\n(" + path + ")"))
+            res.send(new BadRequestException(error + '\n(' + path + ')'))
         }
     }
 

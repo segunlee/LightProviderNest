@@ -1,14 +1,33 @@
-<h1>LightProvider</h1>
+<div class="card">
+    <div class="card-body">
+        <main class="form-signin">
+            <form>
+                <button id="logButton">
+                    <img class="mb-4" src="assets/appIcon.png" alt="" width="72" height="89">
+                </button>
+                <h1 class="h3 mb-3 fw-normal">LightProvider</h1>
 
-<hr />
-
-<div>
-    <input placeholder="PORT" value="{{ config.PORT }}" #PORT />
-    <input placeholder="PASSWORD" value="{{ config.PASSWORD }}" #PASSWORD />
-    <input placeholder="ROOT" value="{{ config.ROOT }}" #ROOT />
-    <button (click)="saveSettings(PORT.value, PASSWORD.value, ROOT.value)">저장</button>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">기본경로</span>
+                    <input type="text" class="form-control" id="BASE_PATH" aria-describedby="basic-addon3">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">포트번호</span>
+                    <input type="text" class="form-control" id="PORT" aria-describedby="basic-addon3">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">패스워드</span>
+                    <input type="text" class="form-control" id="PASSWORD" aria-describedby="basic-addon3">
+                </div>
+                <div class="d-grid gap-2 d-md-block">
+                    <button id="saveButton" class="btn btn-secondary" type="button">설정 저장</button>
+                    <button id="serverStatusToggleButton" class="btn btn-primary" type="button">서버 재시작</button>
+                </div>
+            </form>
+        </main>
+    </div>
 </div>
-{{ config.PORT }}
-<!-- <h3 *ngFor="let product of products">
-    {{ product.name }} <small>{{ product.count }}</small>
-</h3> -->
+
+<div id="log_container">
+    <span class="d-block p-2 bg-primary text-white">d-block</span>
+</div>
