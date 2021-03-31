@@ -25,7 +25,7 @@ function createWindow() {
         },
     })
     mainWindow.loadFile(`dist/LightProvider/index.html`)
-    mainWindow.webContents.openDevTools()
+        // mainWindow.webContents.openDevTools()
 
     mainWindow.on('close', () => {
         logger.log('Electron: close')
