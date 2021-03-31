@@ -12,9 +12,10 @@
         "electron": "electron .",
         "ng-electron-build": "rimraf dist & ng build --base-href ./",
         "package": "electron-packager .",
-        "package:win": "electron-packager . LightProvider --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico  --extra-resource=../dist --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='ELightProvider'",
-        "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds --extra-resource=../dist",
-        "package:linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --extra-resource=../dist --prune=true --out=release-builds"
+        "package:win": "electron-packager . LightProvider --overwrite --asar=true --prune=true --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --extra-resource=../dist --out=release-builds",
+        "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --out=release-builds --extra-resource=../dist && electron-installer-dmg ./release-builds/LightProvider-darwin-x64/LightProvider.app LightProvider --out=./release-builds --overwrite",
+        "installer:mac": "electron-installer-dmg ./release-builds/LightProvider-darwin-x64/LightProvider.app LightProvider --out=./release-builds",
+        "package:linux": "electron-packager . LightProvider --overwrite --asar=true --prune=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --extra-resource=../dist --out=release-builds "
     },
     "private": true,
     "dependencies": {
