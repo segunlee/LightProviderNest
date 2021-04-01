@@ -12,7 +12,8 @@
         "e2e": "ng e2e",
         "electron": "electron .",
         "ng-electron-build": "rimraf dist & ng build --base-href ./",
-        "build:mac": "electron-builder --mac --x64"
+        "build:mac": "electron-builder --mac --x64",
+        "build:win": "electron-builder --win --x64"
     },
     "private": true,
     "dependencies": {
@@ -108,7 +109,8 @@
             "output": "build/",
             "app": "."
         },
-        "extraResources": [{
+        "extraResources": [
+            {
                 "from": "../dist",
                 "to": "dist",
                 "filter": [
