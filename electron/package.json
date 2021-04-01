@@ -2,6 +2,7 @@
     "name": "LightProvider",
     "version": "1.0.0",
     "main": "main.js",
+    "author": "LEE SEGUN <segunleedev@gmail.com>",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -11,11 +12,7 @@
         "e2e": "ng e2e",
         "electron": "electron .",
         "ng-electron-build": "rimraf dist & ng build --base-href ./",
-        "package": "electron-packager .",
-        "package:win": "electron-packager . LightProvider --overwrite --asar=true --prune=true --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --extra-resource=../dist --out=release-builds",
-        "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --out=release-builds --extra-resource=../dist && electron-installer-dmg ./release-builds/LightProvider-darwin-x64/LightProvider.app LightProvider --out=./release-builds --overwrite",
-        "installer:mac": "electron-installer-dmg ./release-builds/LightProvider-darwin-x64/LightProvider.app LightProvider --out=./release-builds",
-        "package:linux": "electron-packager . LightProvider --overwrite --asar=true --prune=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --extra-resource=../dist --out=release-builds "
+        "build:mac": "electron-builder --mac --x64"
     },
     "private": true,
     "dependencies": {
@@ -48,7 +45,7 @@
         "@types/node": "^12.20.7",
         "codelyzer": "^5.1.2",
         "electron": "^9.4.4",
-        "electron-packager": "^15.2.0",
+        "electron-builder": "^22.10.5",
         "jasmine-core": "~3.5.0",
         "jasmine-spec-reporter": "~4.2.1",
         "karma": "~5.0.0",
@@ -60,5 +57,71 @@
         "ts-node": "~8.3.0",
         "tslint": "~6.1.0",
         "typescript": "~3.8.3"
+    },
+    "build": {
+        "productName": "LightProvider",
+        "appId": "SGIOS.lightprovider",
+        "asar": false,
+        "protocols": {
+            "name": "LightProvider",
+            "schemes": [
+                "LightProvider"
+            ]
+        },
+        "mac": {
+            "target": [
+                "dmg"
+            ],
+            "icon": "assets/icons/mac/icon.icns"
+        },
+        "dmg": {
+            "title": "LightProvider",
+            "icon": "assets/icons/mac/icon.icns"
+        },
+        "win": {
+            "target": [
+                "zip",
+                "nsis"
+            ],
+            "icon": "assets/icons/win/icon.ico"
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb",
+                "rpm",
+                "zip",
+                "tar.gz"
+            ],
+            "icon": "assets/icons/win/icon.ico"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": false,
+            "installerLanguages": [
+                "ko_KR"
+            ],
+            "language": "1042"
+        },
+        "directories": {
+            "buildResources": "resources/installer/",
+            "output": "build/",
+            "app": "."
+        },
+        "extraResources": [{
+                "from": "../dist",
+                "to": "dist",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "../node_modules",
+                "to": "dist/node_modules",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ]
     }
 }

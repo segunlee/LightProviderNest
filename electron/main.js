@@ -43,7 +43,6 @@ function createWindow() {
 
 async function startServer() {
     logger.log('Electron: Starting server')
-    const { spawn } = require('child_process')
 
     var env = process.env
     env.NODE_ENV = 'prod'
@@ -66,18 +65,31 @@ async function startServer() {
     }
 
     try {
-        logger.log('Electron: Start with this.config => ' + env)
-        nodeProcess = spawn(
+        logger.log('Electron: Start spawn node process')
+        logger.log(`PORT: ${env.PORT} | PASSWORD: ${env.PASSWORD} | BASE_PATH: ${env.BASE_PATH}`)
+        logger.log(`node path: ${path.join(__dirname, 'node_modules/node/bin/node')}`)
+        logger.log(`api nest path: ${path.join(__dirname, '../dist/main')}`)
+
+        var childProcess = require('child_process')
+        nodeProcess = childProcess.spawn(
             path.join(__dirname, 'node_modules/node/bin/node'), [path.join(__dirname, '../dist/main')], {
                 stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
                 cwd: process.cwd(),
             }, env
         )
 
+
+        logger.log('Electron: Start stdout.on')
         nodeProcess.stdout.on('data', function(data) {
             logger.log('API Server: ' + data)
         })
 
+        logger.log('Electron: Start stderr.on')
+        nodeProcess.stderr.on('data', function(data) {
+            logger.log('API Server Error: ' + data)
+        })
+
+        logger.log('Electron: Start on')
         nodeProcess.on('message', (message) => {
             logger.log('API Server: ' + message)
         })

@@ -37,6 +37,7 @@ lerna-debug.log*
 # ELECTRPON
 electron/default_configs.json
 electron/dist
+electron/build
 electron/node_modules
 electron/log.txt
 electron/release-builds

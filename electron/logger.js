@@ -10,5 +10,5 @@ exports.log = async(message) => {
     }
 
     let date = new Date().toISOString().replace('T', ' ').substring(0, 19)
-    fs.appendFileSync(path.join(__dirname, "./lightprovider.log"), `${date} ${message}`)
+    fs.appendFileSync(path.join(__dirname, "./lightprovider.log"), `${date} ${message}\n`)
 }
