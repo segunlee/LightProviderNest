@@ -1,7 +1,7 @@
 ## LightProvider Docker 사용방법 (Synology 기준)
 
 1.  시놀로지의 패키지 센터에서 Docker를 설치합니다.
-    ![FE3D862B-F8F8-4AA1-B726-F1B7D495BA14_1_105_c](../../../Pictures/Photos Library.photoslibrary/resources/derivatives/F/FE3D862B-F8F8-4AA1-B726-F1B7D495BA14_1_105_c.jpeg)
+    ![FE3D862B-F8F8-4AA1-B726-F1B7D495BA14_1_105_c](README_docker/FE3D862B-F8F8-4AA1-B726-F1B7D495BA14_1_105_c.jpeg)
 
 2. Docker를 실행 한 후 레지스트리 사이드메뉴에서 lightprovider를 검색한 후 다운로드 합니다.
     ![482475AB-0D26-460F-A054-215F095E0795_1_105_c](README_docker/482475AB-0D26-460F-A054-215F095E0795_1_105_c.jpeg)
