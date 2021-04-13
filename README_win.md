@@ -1,7 +1,7 @@
 ## LightProvider 윈도우 애플리케이션 사용방법
 
 1. LightProvider 1.0.0 다운로드
-    * (설치 버전[exe] 다운로드)[https://dsm.segunlee.space:5001/sharing/Iz3tuaIh1]
+    * (설치 버전[exe] 다운로드)[https://dsm.segunlee.space/sharing/Iz3tuaIh1]
     
         ```
         인스톨러를 통해 설치 진행 후 LightProvider 실행
