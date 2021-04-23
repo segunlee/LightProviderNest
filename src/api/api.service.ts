@@ -13,6 +13,8 @@ const unzip = require('node-stream-zip')
 const unrar = require('node-unrar-js')
 const pathModule = require('path')
 
+var AllowImageFileExtension = ["BMP", "CUR", "GIF", "ICO", "JPEG", "JPG", "PNG", "PSD", "TIFF", "WebP", "SVG", "DDS"]
+
 @Injectable()
 export class APIService {
 
@@ -35,6 +37,11 @@ export class APIService {
             console.log(error)
             return false
         }
+    }
+
+    getExtension(filename: string) {
+        var ext = pathModule.extname(filename||'').split('.');
+        return ext[ext.length - 1];
     }
 
     async isDirectory(path: string): Promise<boolean> {
@@ -118,6 +125,10 @@ export class APIService {
                     continue
                 }
 
+                if (!AllowImageFileExtension.includes(this.getExtension(entry.name).toUpperCase())) {
+                    continue
+                }
+
                 var dimensions = { width: 0, height: 0 }
                 if (mode == ArchiveContentMode.include_size) {
                     const data = await zip.entryData(entry.name)
@@ -156,6 +167,11 @@ export class APIService {
                 if (header.name.includes('__MACOSX/')) {
                     continue
                 }
+
+                if (!AllowImageFileExtension.includes(this.getExtension(header.name).toUpperCase())) {
+                    continue
+                }
+
                 fileNames.push(header.name)
             }
 
