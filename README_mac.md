@@ -2,7 +2,7 @@
 
 
 
-1. (LightProvider 1.0.0 다운로드)[https://dsm.segunlee.space/sharing/fZZN1IIwQ]
+1. (LightProvider 1.0.0 다운로드)[https://dsm.segunlee.space/sharing/GMlYHbpfn]
 2. 다운로드 된 LightProvider-1.0.0.dmg 실행
 3. LightProvider.app 앱을 Application 폴더로 이동
     ![image-20210401205431807](README_mac/image-20210401205431807.png)
